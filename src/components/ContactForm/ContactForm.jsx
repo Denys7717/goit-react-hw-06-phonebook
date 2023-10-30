@@ -1,52 +1,43 @@
 import { nanoid } from 'nanoid';
 import css from './ContactForm.module.css';
-import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { createContact } from 'store/slice';
+import { getContacts } from 'store/selectors';
 
-const ContactForm = ({ addContactFn }) => {
-  const [name, SetName] = useState('');
-  const [number, SetNumber] = useState('');
+const ContactForm = () => {
+  const dispatch = useDispatch();
+  const contactsSel = useSelector(getContacts);
+  const { contacts } = contactsSel;
 
   const idName = nanoid();
   const idNumber = nanoid();
 
-  const setData = event => {
+  const handleSubmit = event => {
     event.preventDefault();
-    const { name, value } = event.target;
-    switch (name) {
-      case 'name':
-        SetName(value);
-        break;
-      case 'number':
-        SetNumber(value);
-        break;
-      default:
-        break;
+    const form = event.target;
+    const name = form.name.value;
+    const value = form.number.value;
+    if (
+      contacts.find(
+        ({ name: nameCont }) => nameCont.toLowerCase() === name.toLowerCase()
+      )
+    ) {
+      alert(`${name} is already in contacts.`);
+      return;
     }
-  };
-
-  const addContact = event => {
-    event.preventDefault();
-
-    const newContact = {
-      name,
-      number,
-      id: nanoid(),
-    };
-    addContactFn(newContact);
+    dispatch(createContact({ name, value }));
   };
 
   return (
     <>
-      <form className={css.contactForm} onSubmit={addContact}>
+      <form className={css.contactForm} onSubmit={handleSubmit}>
         <label htmlFor={idName}>Name</label>
         <input
           type="text"
           id={idName}
           name="name"
-          onChange={setData}
           pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
           title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-          value={name}
           required
         />
         <label htmlFor={idNumber}>Number</label>
@@ -54,10 +45,8 @@ const ContactForm = ({ addContactFn }) => {
           id={idNumber}
           type="tel"
           name="number"
-          onChange={setData}
           pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
           title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-          value={number}
           required
         />
         <button type="submit" className={css.btn}>

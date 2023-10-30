@@ -1,11 +1,14 @@
 import { nanoid } from 'nanoid';
 import css from './Filter.module.css';
+import { filterContact } from 'store/slice';
+import { useDispatch } from 'react-redux';
 
-const Filter = ({ filter }) => {
+const Filter = () => {
   const idFilter = nanoid();
+  const dispatch = useDispatch();
 
   const findContact = event => {
-    filter(event.target.value);
+    dispatch(filterContact(event.target.value));
   };
 
   return (
