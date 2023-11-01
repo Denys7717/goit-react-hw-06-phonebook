@@ -16,10 +16,10 @@ export const ContactList = () => {
   return (
     <ul className={css.contactList}>
       {contacts &&
-        visibleContacts.map(({ id, name, number }) => {
+        visibleContacts.map(({ id, name, value }) => {
           return (
             <li key={id} className={css.contactItem}>
-              {name}: {number}{' '}
+              {name}: {value}
               <button
                 type="button"
                 className={css.btn}

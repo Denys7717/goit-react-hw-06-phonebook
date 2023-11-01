@@ -5,6 +5,7 @@ import { persistReducer } from 'redux-persist';
 const persistConfig = {
   key: 'root',
   storage,
+  whitelist: ['contacts'],
 };
 
 const persistedReducer = persistReducer(persistConfig, reducerPhone);
